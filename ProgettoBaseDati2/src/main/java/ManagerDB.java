@@ -22,19 +22,23 @@ public class ManagerDB {
 
     public static String dbName = "ProgettoBD2";
     public static String collectionName = "Players";
+    private MongoCollection<Document> collection;
+    private MongoDatabase database;
 
-    public static void main(String[] args) {
+    public ManagerDB(){
         String uri = "mongodb://localhost:27017";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             System.out.println("Connesso correttamente a " + uri);
-            MongoDatabase database = mongoClient.getDatabase(dbName);
+            database = mongoClient.getDatabase(dbName);
             System.out.println("Selezionato Database " + dbName);
-            MongoCollection<Document> collection = database.getCollection(collectionName);
+            collection = database.getCollection(collectionName);
             System.out.println("Selezionata Collezione " + collectionName);
-            Menu(collection);
-
-
         }
+    }
+
+    public static void main(String[] args) {
+        //Menu(this.collection);
+        System.out.println("Avviato");
     }
 
     //QUERY
