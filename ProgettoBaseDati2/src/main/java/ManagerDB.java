@@ -8,7 +8,11 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Scanner;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -22,24 +26,24 @@ public class ManagerDB {
 
     public static String dbName = "ProgettoBD2";
     public static String collectionName = "Players";
-    private MongoCollection<Document> collection;
-    private MongoDatabase database;
 
     public ManagerDB(){
-        String uri = "mongodb://localhost:27017";
-        try (MongoClient mongoClient = MongoClients.create(uri)) {
-            System.out.println("Connesso correttamente a " + uri);
-            database = mongoClient.getDatabase(dbName);
-            System.out.println("Selezionato Database " + dbName);
-            collection = database.getCollection(collectionName);
-            System.out.println("Selezionata Collezione " + collectionName);
-        }
+
     }
 
     public static void main(String[] args) {
-        //Menu(this.collection);
-        System.out.println("Avviato");
+        String uri = "mongodb://localhost:27017";
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            System.out.println("Connesso correttamente a " + uri);
+            MongoDatabase database = mongoClient.getDatabase(dbName);
+            System.out.println("Selezionato Database " + dbName);
+            MongoCollection<Document> collection = database.getCollection(collectionName);
+            System.out.println("Selezionata Collezione " + collectionName);
+            Menu(collection);
+
+        }
     }
+
 
     //QUERY
     public static Document cercaNickname(MongoCollection<Document> collection, String Nickname){
@@ -265,6 +269,33 @@ public class ManagerDB {
         finally
         {
                 results.close();
+        }
+    }
+
+    public static String StringMultipleResult(MongoCursor<Document> results)
+    {
+        try
+        {
+            String result="";
+            //guiView.setText("");
+            if(results.hasNext()==false)
+                result="Nessun Risultato Trovato";
+                //guiView.setText("Nessun Risultato Trovato");
+            while(results.hasNext())
+            {
+                /*
+                guiView.append(results.next().toJson());
+                guiView.append("\n");
+                 */
+                result+=results.next().toJson();
+                result+="\n";
+            }
+            return result;
+
+        }
+        finally
+        {
+            results.close();
         }
     }
 
