@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.client.*;
@@ -7,11 +8,13 @@ import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.json.JsonObject;
 import org.bson.types.ObjectId;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
@@ -40,7 +43,15 @@ public class ManagerDB {
     public static JButton contaGeneri;
     public static JButton decrescenteButton;
     public static JButton allButton;
+    public static JButton modificaButton;
+    public static JButton guadagniButton;
+    public static JButton eliminaButton;
+    public static JButton inserisciButton;
+    public static JButton effettuaModificaButton;
+    public static JButton modificaGuadagniButton;
+    public static JButton aggiungiGiocatore;
     public static JTextField ricercaField;
+    public static JTextField nickField;
     public static JTextArea viewArea;
 
 
@@ -61,7 +72,6 @@ public class ManagerDB {
                 System.out.println("Selezionata Collezione " + collectionName);
             gui= new GUI();
             viewArea = gui.getViewArea();
-            viewArea.setText("Ciao Sono Entrato");
             cercaNick = gui.getRicercaNick();
             cercaNazione = gui.getRicercaNazionalita();
             cercaNome = gui.getRicercaNome();
@@ -75,6 +85,140 @@ public class ManagerDB {
             contaGioco=gui.getContaGiochi();
             contaGeneri=gui.getContaGeneri();
             allButton=gui.getAllButton();
+            nickField=gui.getNickField();
+            modificaButton=gui.getModificaButton();
+            guadagniButton=gui.getGuadagniButton();
+            eliminaButton=gui.getRimuoviButton();
+            inserisciButton=gui.getInserisciButton();
+            eliminaButton=gui.getRimuoviButton();
+            eliminaButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(cancellaGiocatore(collection,nickField.getText())==0)
+                        JOptionPane.showMessageDialog(gui,"Nessun Giocatore Trovato");
+                    else
+                        JOptionPane.showMessageDialog(gui,"Giocatore "+nickField.getText()+" eliminato.");
+                }
+            });
+            inserisciButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ModificaGUI modificaGUI = new ModificaGUI();
+                    aggiungiGiocatore=modificaGUI.getModificaButton();
+                    aggiungiGiocatore.setText("Aggiungi Giocatore");
+                    aggiungiGiocatore.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            inserisciGiocatore(collection,
+                                    modificaGUI.getNomeField().getText(),
+                                    modificaGUI.getCognomeField().getText(),
+                                    modificaGUI.getNickField().getText(),
+                                    modificaGUI.getNazionalitaField().getText(),
+                                    Double.parseDouble(modificaGUI.getGuadagniField().getText()),
+                                    modificaGUI.getGiocoField().getText(),
+                                    modificaGUI.getGenereField().getText());
+                            modificaGUI.setVisible(false);
+                            modificaGUI.dispose();
+                            JOptionPane.showMessageDialog(gui,"Giocatore Inserito Correttamente");
+                        }
+                    });
+                }
+            });
+            modificaButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Document toModify = cercaSingolo(collection,nickField.getText());
+                    try
+                    {
+                            String toModifyStr = toModify.toJson();
+                            String[] toModifyArray = toModifyStr.split(",");
+                            ModificaGUI modificaGUI = new ModificaGUI();
+                            for(int i=0;i<toModifyArray.length;i++)
+                            {
+                                if(toModifyArray[i].contains("Nome"))
+                                {
+                                    String[] field = toModifyArray[i].split(":");
+                                    modificaGUI.getNomeField().setText(pulisciString(field[1]));
+                                }
+                                else if(toModifyArray[i].contains("Cognome"))
+                                {
+                                    String[] field = toModifyArray[i].split(":");
+                                    modificaGUI.getCognomeField().setText(pulisciString(field[1]));
+                                }
+                                else if(toModifyArray[i].contains("Nickname"))
+                                {
+                                    String[] field = toModifyArray[i].split(":");
+                                    modificaGUI.getNickField().setText(pulisciString(field[1]));
+                                }
+                                else if(toModifyArray[i].contains("Paese"))
+                                {
+                                    String[] field = toModifyArray[i].split(":");
+                                    modificaGUI.getNazionalitaField().setText(pulisciString(field[1]));
+                                }
+                                else if(toModifyArray[i].contains("Guadagni"))
+                                {
+                                    String[] field = toModifyArray[i].split(":");
+                                    modificaGUI.getGuadagniField().setText(pulisciString(field[1]));
+                                }
+                                else if(toModifyArray[i].contains("Gioco"))
+                                {
+                                    String[] field = toModifyArray[i].split(":");
+                                    modificaGUI.getGiocoField().setText(pulisciString(field[1]));
+                                }
+                                else if(toModifyArray[i].contains("Genere"))
+                                {
+                                    String[] field = toModifyArray[i].split(":");
+                                    modificaGUI.getGenereField().setText(pulisciString(field[1]));
+                                }
+                            }
+                            modificaGUI.getGuadagniField().setEnabled(false);
+                            effettuaModificaButton = modificaGUI.getModificaButton();
+                            effettuaModificaButton.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    modificaGiocatore(collection,nickField.getText(),
+                                            modificaGUI.getNomeField().getText(),
+                                            modificaGUI.getCognomeField().getText(),
+                                            modificaGUI.getNazionalitaField().getText(),
+                                            modificaGUI.getNickField().getText(),
+                                            modificaGUI.getGiocoField().getText(),
+                                            modificaGUI.getGenereField().getText());
+                                            modificaGUI.setVisible(false);
+                                            modificaGUI.dispose();
+                                }
+                            });
+                    }
+                    catch (Exception ie)
+                    {
+                        JOptionPane.showMessageDialog(gui,"Nessun Giocatore Trovato");
+                    }
+
+                }
+            });
+            guadagniButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Document toModify = cercaSingolo(collection,nickField.getText());
+                    try {
+                        String toModifyStr = toModify.toJson();
+                        GuadagniGUI guadagniGUI = new GuadagniGUI(nickField.getText());
+                        modificaGuadagniButton=guadagniGUI.getModificaButton();
+                        modificaGuadagniButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                aggiungiGuadagni(collection,nickField.getText(),
+                                        Double.parseDouble(guadagniGUI.getGuadagniField().getText()));
+                                guadagniGUI.setVisible(false);
+                                guadagniGUI.dispose();
+                            }
+                        });
+                    }
+                    catch (Exception ie)
+                    {
+                        JOptionPane.showMessageDialog(gui,"Nessun Giocatore Trovato");
+                    }
+                }
+            });
             allButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -153,17 +297,27 @@ public class ManagerDB {
         System.out.println("Programma Finito");
     }
 
-
-    //ESCAPE FUNZIONE
+    //PULISCI STRINGA
+    public static String pulisciString(String stringa){
+        stringa = stringa.replaceAll("\"","");
+        stringa = stringa.replaceAll("}","");
+        stringa = stringa.replaceAll("\\\\","");
+        stringa = stringa.substring(1);
+        return stringa;
+    }
+    //ESCAPE FUNCTION
     public static void Excape()
     {
         int i=1;
         Scanner scanner = new Scanner(System.in);
         while(i!=0)
         {
+            System.out.println("Inserisci 0 per uscire");
             i= scanner.nextInt();
         }
     }
+
+
     //QUERY
 
     public static MongoCursor<Document> cercaTutti(MongoCollection<Document> collection){
@@ -179,6 +333,14 @@ public class ManagerDB {
         } else {
             return risultati;
         }
+    }
+
+    public static Document cercaSingolo(MongoCollection<Document> collection, String Nickname){
+        Document results = collection.find(eq("Nickname",Nickname)).first();
+        if(results == null)
+            return null;
+        else
+            return results;
     }
 
     public static MongoCursor<Document> cercaNickname(MongoCollection<Document> collection, String Nickname){
@@ -377,17 +539,22 @@ public class ManagerDB {
         }
     }
 
-    public static void cancellaGiocatore(MongoCollection<Document> collection, String Nickname){
+    public static long cancellaGiocatore(MongoCollection<Document> collection, String Nickname){
         Bson query = eq("Nickname", Nickname);
         try {
             DeleteResult result = collection.deleteOne(query);
-            System.out.println("Cancellato Giocatore: " + result.getDeletedCount());
+            return result.getDeletedCount();
         } catch (MongoException me) {
-            System.err.println("Giocatore non Cancellato " + me);
+            return 0;
         }
     }
 
     //OUTPUT RISULTATI
+    /*
+
+    DEPRECATED WITH GUI
+
+    
     public static void PrintSingleResult(Document doc)
     {
         if(doc!=null)
@@ -414,6 +581,7 @@ public class ManagerDB {
                 results.close();
         }
     }
+     */
 
     public static String StringMultipleResult(MongoCursor<Document> results)
     {
@@ -422,7 +590,6 @@ public class ManagerDB {
             String result="";
             if(results.hasNext()==false)
                 result="Nessun Risultato Trovato";
-                //guiView.setText("Nessun Risultato Trovato");
             while(results.hasNext())
             {
                 result+=results.next().toJson();

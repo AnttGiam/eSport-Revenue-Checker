@@ -20,6 +20,51 @@ public class GUI extends JFrame {
     private JButton contaGiochi;
     private JButton contaGeneri;
     private JButton allButton;
+    private JTextField nickField;
+    private JButton modificaButton;
+    private JButton guadagniButton;
+    private JButton rimuoviButton;
+    private JButton inserisciButton;
+
+    public JTextField getNickField() {
+        return nickField;
+    }
+
+    public void setNickField(JTextField nickField) {
+        this.nickField = nickField;
+    }
+
+    public JButton getModificaButton() {
+        return modificaButton;
+    }
+
+    public void setModificaButton(JButton modificaButton) {
+        this.modificaButton = modificaButton;
+    }
+
+    public JButton getGuadagniButton() {
+        return guadagniButton;
+    }
+
+    public void setGuadagniButton(JButton guadagniButton) {
+        this.guadagniButton = guadagniButton;
+    }
+
+    public JButton getRimuoviButton() {
+        return rimuoviButton;
+    }
+
+    public void setRimuoviButton(JButton rimuoviButton) {
+        this.rimuoviButton = rimuoviButton;
+    }
+
+    public JButton getInserisciButton() {
+        return inserisciButton;
+    }
+
+    public void setInserisciButton(JButton inserisciButton) {
+        this.inserisciButton = inserisciButton;
+    }
 
     public JButton getAllButton() {
         return allButton;
@@ -177,13 +222,11 @@ public class GUI extends JFrame {
 
         //main panel
         mainContent.setSize(1000,500);
-        mainContent.setBackground(Color.BLUE);
         mainContent.setLayout(new GridBagLayout());
         GridBagConstraints viewLayoutConstraints = new GridBagConstraints();
         GridBagConstraints commandLayoutConstraints = new GridBagConstraints();
 
         //view panel
-        viewPanel.setBackground(Color.BLACK);
         viewLayoutConstraints.gridx=0;
         viewLayoutConstraints.gridy=0;
         viewLayoutConstraints.weightx=0.75;
@@ -197,8 +240,6 @@ public class GUI extends JFrame {
         viewScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         viewScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         viewScrollPane.getViewport().add(viewArea);
-        for (int i=0;i<250;i++)
-            viewArea.append("Ciao Sono Antonio\n");
         viewArea.setEditable(false);
 
 
@@ -206,7 +247,6 @@ public class GUI extends JFrame {
         mainContent.add(viewPanel,viewLayoutConstraints);
 
         //command panel
-        commandPanel.setBackground(Color.RED);
         commandLayoutConstraints.gridx=2;
         commandLayoutConstraints.gridy=0;
         commandLayoutConstraints.weightx=0.25;
@@ -397,16 +437,83 @@ public class GUI extends JFrame {
         contaGeneriLayoutConstraints.fill=GridBagConstraints.HORIZONTAL;
         ordinaPanel.add(contaGeneri,contaGeneriLayoutConstraints);
 
+        //Inserimento e Modifica Dati
+        JPanel modificaPanel = new JPanel();
+        modificaPanel.setLayout(new GridBagLayout());
+
+        //Label
+        JLabel nickLabel = new JLabel("Inserisci il Nickname del Giocatore da modificare");
+        GridBagConstraints nickLabelLayoutConstraints = new GridBagConstraints();
+        nickLabelLayoutConstraints.insets=new Insets(10,10,0,10);
+        nickLabelLayoutConstraints.gridx=0;
+        nickLabelLayoutConstraints.gridy=0;
+        nickLabelLayoutConstraints.gridwidth=2;
+        nickLabelLayoutConstraints.fill=GridBagConstraints.BOTH;
+        modificaPanel.add(nickLabel,nickLabelLayoutConstraints);
+
+        //NickField
+        nickField = new JTextField();
+        GridBagConstraints nickFieldLayoutConstraints = new GridBagConstraints();
+        nickFieldLayoutConstraints.insets=new Insets(10,10,10,10);
+        nickFieldLayoutConstraints.gridx=0;
+        nickFieldLayoutConstraints.gridy=1;
+        nickFieldLayoutConstraints.weightx=0.70;
+        nickFieldLayoutConstraints.gridwidth=3;
+        nickFieldLayoutConstraints.fill=GridBagConstraints.BOTH;
+        modificaPanel.add(nickField,nickFieldLayoutConstraints);
+
+        //Modifica Giocatore
+        modificaButton = new JButton("Modifica");
+        GridBagConstraints modificaButtonLayoutConstraints = new GridBagConstraints();
+        modificaButtonLayoutConstraints.gridx=0;
+        modificaButtonLayoutConstraints.gridy=3;
+        modificaButtonLayoutConstraints.weightx=0.25;
+        modificaButtonLayoutConstraints.gridwidth=1;
+        modificaButtonLayoutConstraints.insets= new Insets(10,10,10,10);
+        modificaButtonLayoutConstraints.fill=GridBagConstraints.HORIZONTAL;
+        modificaPanel.add(modificaButton,modificaButtonLayoutConstraints);
+
+        //Guadagni Giocatore
+        guadagniButton = new JButton("Guadagni");
+        GridBagConstraints guadagniButtonLayoutConstraints = new GridBagConstraints();
+        guadagniButtonLayoutConstraints.gridx=1;
+        guadagniButtonLayoutConstraints.gridy=3;
+        guadagniButtonLayoutConstraints.weightx=0.25;
+        guadagniButtonLayoutConstraints.gridwidth=1;
+        guadagniButtonLayoutConstraints.insets= new Insets(10,10,10,10);
+        guadagniButtonLayoutConstraints.fill=GridBagConstraints.HORIZONTAL;
+        modificaPanel.add(guadagniButton,guadagniButtonLayoutConstraints);
+
+        //Elimina Giocatore
+        rimuoviButton = new JButton("Elimina");
+        GridBagConstraints rimuoviButtonLayoutConstraints = new GridBagConstraints();
+        rimuoviButtonLayoutConstraints.gridx=2;
+        rimuoviButtonLayoutConstraints.gridy=3;
+        rimuoviButtonLayoutConstraints.weightx=0.25;
+        rimuoviButtonLayoutConstraints.gridwidth=1;
+        rimuoviButtonLayoutConstraints.insets= new Insets(10,10,10,10);
+        rimuoviButtonLayoutConstraints.fill=GridBagConstraints.HORIZONTAL;
+        modificaPanel.add(rimuoviButton,rimuoviButtonLayoutConstraints);
+
+        //Inserisci Giocatore
+        inserisciButton = new JButton("Inserisci Nuovo Giocatore");
+        GridBagConstraints inserisciButtonLayoutConstraints = new GridBagConstraints();
+        inserisciButtonLayoutConstraints.gridx=0;
+        inserisciButtonLayoutConstraints.gridy=4;
+        inserisciButtonLayoutConstraints.weightx=1;
+        inserisciButtonLayoutConstraints.gridwidth=3;
+        inserisciButtonLayoutConstraints.insets= new Insets(10,10,10,10);
+        inserisciButtonLayoutConstraints.fill=GridBagConstraints.HORIZONTAL;
+        modificaPanel.add(inserisciButton,inserisciButtonLayoutConstraints);
+
+
         commandPanel.add(ricercaPanel);
         commandPanel.add(ordinaPanel);
+        commandPanel.add(modificaPanel);
         mainContent.add(commandPanel,commandLayoutConstraints);
 
 
         this.setContentPane(mainContent);
         this.setVisible(true);
-    }
-
-    public static void main (String[] args){
-        JFrame frame = new InterfacciaGrafica();
     }
 }
