@@ -14,7 +14,60 @@ public class GUI extends JFrame {
     private JButton ricercaCognome;
     private JButton ricercaGenere;
     private JButton ricercaGioco;
+    private JButton resettaButton;
+    private JButton ordinaCrescenteButton;
+    private JButton ordinaDecrescenteButton;
+    private JButton contaGiochi;
+    private JButton contaGeneri;
+    private JButton allButton;
 
+    public JButton getAllButton() {
+        return allButton;
+    }
+
+    public void setAllButton(JButton allButton) {
+        this.allButton = allButton;
+    }
+
+    public JButton getContaGiochi() {
+        return contaGiochi;
+    }
+
+    public void setContaGiochi(JButton contaGiochi) {
+        this.contaGiochi = contaGiochi;
+    }
+
+    public JButton getContaGeneri() {
+        return contaGeneri;
+    }
+
+    public void setContaGeneri(JButton contaGeneri) {
+        this.contaGeneri = contaGeneri;
+    }
+
+    public JButton getOrdinaCrescenteButton() {
+        return ordinaCrescenteButton;
+    }
+
+    public void setOrdinaCrescenteButton(JButton ordinaCrescenteButton) {
+        this.ordinaCrescenteButton = ordinaCrescenteButton;
+    }
+
+    public JButton getOrdinaDecrescenteButton() {
+        return ordinaDecrescenteButton;
+    }
+
+    public void setOrdinaDecrescenteButton(JButton ordinaDecrescenteButton) {
+        this.ordinaDecrescenteButton = ordinaDecrescenteButton;
+    }
+
+    public JButton getResettaButton() {
+        return resettaButton;
+    }
+
+    public void setResettaButton(JButton resettaButton) {
+        this.resettaButton = resettaButton;
+    }
 
     public JPanel getMainContent() {
         return mainContent;
@@ -163,16 +216,50 @@ public class GUI extends JFrame {
 
         //ricerca panel
         ricercaPanel = new JPanel(new GridBagLayout());
+
+        //Label
+        JLabel ricercaLabel = new JLabel("Inserisci i termini di ricerca");
+        GridBagConstraints ricercaLabelLayoutConstraints = new GridBagConstraints();
+        ricercaLabelLayoutConstraints.insets=new Insets(10,10,0,10);
+        ricercaLabelLayoutConstraints.gridx=0;
+        ricercaLabelLayoutConstraints.gridy=0;
+        ricercaLabelLayoutConstraints.gridwidth=1;
+        ricercaLabelLayoutConstraints.fill=GridBagConstraints.BOTH;
+        ricercaPanel.add(ricercaLabel,ricercaLabelLayoutConstraints);
+
+        //AllButton
+        allButton = new JButton("Tutto");
+        GridBagConstraints allButtonLayoutConstraints = new GridBagConstraints();
+        allButtonLayoutConstraints.gridx=1;
+        allButtonLayoutConstraints.gridy=0;
+        allButtonLayoutConstraints.weightx=0.25;
+        allButtonLayoutConstraints.gridwidth=1;
+        allButtonLayoutConstraints.insets= new Insets(10,10,0,10);
+        allButtonLayoutConstraints.fill=GridBagConstraints.HORIZONTAL;
+        ricercaPanel.add(allButton,allButtonLayoutConstraints);
+
+        //ResetButton
+        resettaButton = new JButton("Reset");
+        GridBagConstraints resettaButtonLayoutConstraints = new GridBagConstraints();
+        resettaButtonLayoutConstraints.gridx=2;
+        resettaButtonLayoutConstraints.gridy=0;
+        resettaButtonLayoutConstraints.weightx=0.25;
+        resettaButtonLayoutConstraints.gridwidth=1;
+        resettaButtonLayoutConstraints.insets= new Insets(10,10,0,10);
+        resettaButtonLayoutConstraints.fill=GridBagConstraints.HORIZONTAL;
+        ricercaPanel.add(resettaButton,resettaButtonLayoutConstraints);
+
+        //TextField
         ricercaField = new JTextField();
-        ricercaField.setToolTipText("Inserisci un campo di ricerca");
         GridBagConstraints ricercaFieldLayoutConstraints = new GridBagConstraints();
         ricercaFieldLayoutConstraints.insets=new Insets(10,10,10,10);
         ricercaFieldLayoutConstraints.gridx=0;
-        ricercaFieldLayoutConstraints.gridy=0;
+        ricercaFieldLayoutConstraints.gridy=1;
         ricercaFieldLayoutConstraints.weightx=0.70;
         ricercaFieldLayoutConstraints.gridwidth=3;
         ricercaFieldLayoutConstraints.fill=GridBagConstraints.BOTH;
         ricercaPanel.add(ricercaField,ricercaFieldLayoutConstraints);
+
 
 
         //Bottoni
@@ -180,7 +267,7 @@ public class GUI extends JFrame {
         ricercaNick = new JButton("Nickname");
         GridBagConstraints ricercaNickLayoutConstraints = new GridBagConstraints();
         ricercaNickLayoutConstraints.gridx=0;
-        ricercaNickLayoutConstraints.gridy=1;
+        ricercaNickLayoutConstraints.gridy=2;
         ricercaNickLayoutConstraints.weightx=0.25;
         ricercaNickLayoutConstraints.gridwidth=1;
         ricercaNickLayoutConstraints.insets= new Insets(10,10,10,10);
@@ -191,7 +278,7 @@ public class GUI extends JFrame {
         ricercaNazionalita = new JButton("Nazionalita'");
         GridBagConstraints ricercaNazionalitaLayoutConstraints = new GridBagConstraints();
         ricercaNazionalitaLayoutConstraints.gridx=1;
-        ricercaNazionalitaLayoutConstraints.gridy=1;
+        ricercaNazionalitaLayoutConstraints.gridy=2;
         ricercaNazionalitaLayoutConstraints.weightx=0.25;
         ricercaNazionalitaLayoutConstraints.gridwidth=1;
         ricercaNazionalitaLayoutConstraints.insets= new Insets(10,10,10,10);
@@ -202,7 +289,7 @@ public class GUI extends JFrame {
         ricercaNome = new JButton("Nome");
         GridBagConstraints ricercaNomeLayoutConstraints = new GridBagConstraints();
         ricercaNomeLayoutConstraints.gridx=2;
-        ricercaNomeLayoutConstraints.gridy=1;
+        ricercaNomeLayoutConstraints.gridy=2;
         ricercaNomeLayoutConstraints.weightx=0.25;
         ricercaNomeLayoutConstraints.gridwidth=1;
         ricercaNomeLayoutConstraints.insets= new Insets(10,10,10,10);
@@ -213,7 +300,7 @@ public class GUI extends JFrame {
         ricercaCognome = new JButton("Cognome");
         GridBagConstraints ricercaCognomeLayoutConstraints = new GridBagConstraints();
         ricercaCognomeLayoutConstraints.gridx=0;
-        ricercaCognomeLayoutConstraints.gridy=2;
+        ricercaCognomeLayoutConstraints.gridy=3;
         ricercaCognomeLayoutConstraints.weightx=0.25;
         ricercaCognomeLayoutConstraints.gridwidth=1;
         ricercaCognomeLayoutConstraints.insets= new Insets(10,10,10,10);
@@ -224,7 +311,7 @@ public class GUI extends JFrame {
         ricercaGioco = new JButton("Gioco");
         GridBagConstraints ricercaGiocoLayoutConstraints = new GridBagConstraints();
         ricercaGiocoLayoutConstraints.gridx=1;
-        ricercaGiocoLayoutConstraints.gridy=2;
+        ricercaGiocoLayoutConstraints.gridy=3;
         ricercaGiocoLayoutConstraints.weightx=0.25;
         ricercaGiocoLayoutConstraints.gridwidth=1;
         ricercaGiocoLayoutConstraints.insets= new Insets(10,10,10,10);
@@ -235,16 +322,83 @@ public class GUI extends JFrame {
         ricercaGenere = new JButton("Genere");
         GridBagConstraints ricercaGenereLayoutConstraints = new GridBagConstraints();
         ricercaGenereLayoutConstraints.gridx=2;
-        ricercaGenereLayoutConstraints.gridy=2;
+        ricercaGenereLayoutConstraints.gridy=3;
         ricercaGenereLayoutConstraints.weightx=0.25;
         ricercaGenereLayoutConstraints.gridwidth=1;
         ricercaGenereLayoutConstraints.insets= new Insets(10,10,10,10);
         ricercaGenereLayoutConstraints.fill=GridBagConstraints.HORIZONTAL;
         ricercaPanel.add(ricercaGenere,ricercaGenereLayoutConstraints);
 
+        //ORDINA PANEL
+        JPanel ordinaPanel = new JPanel();
+        ordinaPanel.setLayout(new GridBagLayout());
 
+        //Label
+        JLabel ordinaLabel = new JLabel("Ordina i dati presenti nel Database");
+        GridBagConstraints ordinaLabelLayoutConstraints = new GridBagConstraints();
+        ordinaLabelLayoutConstraints.insets=new Insets(10,10,0,10);
+        ordinaLabelLayoutConstraints.gridx=0;
+        ordinaLabelLayoutConstraints.gridy=0;
+        ordinaLabelLayoutConstraints.gridwidth=2;
+        ordinaLabelLayoutConstraints.fill=GridBagConstraints.BOTH;
+        ordinaPanel.add(ordinaLabel,ordinaLabelLayoutConstraints);
+
+        //Ordina Crescente Button
+        ordinaCrescenteButton = new JButton("Crescente");
+        GridBagConstraints ordinaCrescenteLayoutConstraints = new GridBagConstraints();
+        ordinaCrescenteLayoutConstraints.gridx=0;
+        ordinaCrescenteLayoutConstraints.gridy=1;
+        ordinaCrescenteLayoutConstraints.weightx=0.25;
+        ordinaCrescenteLayoutConstraints.gridwidth=1;
+        ordinaCrescenteLayoutConstraints.insets= new Insets(10,10,10,10);
+        ordinaCrescenteLayoutConstraints.fill=GridBagConstraints.HORIZONTAL;
+        ordinaPanel.add(ordinaCrescenteButton,ordinaCrescenteLayoutConstraints);
+
+        //Ordina Decrescente Button
+        ordinaDecrescenteButton = new JButton("Decrescente");
+        GridBagConstraints ordinaDecrescenteLayoutConstraints = new GridBagConstraints();
+        ordinaDecrescenteLayoutConstraints.gridx=1;
+        ordinaDecrescenteLayoutConstraints.gridy=1;
+        ordinaDecrescenteLayoutConstraints.weightx=0.25;
+        ordinaDecrescenteLayoutConstraints.gridwidth=1;
+        ordinaDecrescenteLayoutConstraints.insets= new Insets(10,10,10,10);
+        ordinaDecrescenteLayoutConstraints.fill=GridBagConstraints.HORIZONTAL;
+        ordinaPanel.add(ordinaDecrescenteButton,ordinaDecrescenteLayoutConstraints);
+
+        //Label
+        JLabel contaLabel = new JLabel("Conta i giocatori presenti nel Database");
+        GridBagConstraints contaLabelLayoutConstraints = new GridBagConstraints();
+        contaLabelLayoutConstraints.insets=new Insets(10,10,0,10);
+        contaLabelLayoutConstraints.gridx=0;
+        contaLabelLayoutConstraints.gridy=2;
+        contaLabelLayoutConstraints.gridwidth=2;
+        contaLabelLayoutConstraints.fill=GridBagConstraints.BOTH;
+        ordinaPanel.add(contaLabel,contaLabelLayoutConstraints);
+
+        //Conta per Giochi
+        contaGiochi = new JButton("Giochi");
+        GridBagConstraints contaGiochiLayoutConstraints = new GridBagConstraints();
+        contaGiochiLayoutConstraints.gridx=0;
+        contaGiochiLayoutConstraints.gridy=3;
+        contaGiochiLayoutConstraints.weightx=0.25;
+        contaGiochiLayoutConstraints.gridwidth=1;
+        contaGiochiLayoutConstraints.insets= new Insets(10,10,10,10);
+        contaGiochiLayoutConstraints.fill=GridBagConstraints.HORIZONTAL;
+        ordinaPanel.add(contaGiochi,contaGiochiLayoutConstraints);
+
+        //Conta per Generi
+        contaGeneri = new JButton("Generi");
+        GridBagConstraints contaGeneriLayoutConstraints = new GridBagConstraints();
+        contaGeneriLayoutConstraints.gridx=1;
+        contaGeneriLayoutConstraints.gridy=3;
+        contaGeneriLayoutConstraints.weightx=0.25;
+        contaGeneriLayoutConstraints.gridwidth=1;
+        contaGeneriLayoutConstraints.insets= new Insets(10,10,10,10);
+        contaGeneriLayoutConstraints.fill=GridBagConstraints.HORIZONTAL;
+        ordinaPanel.add(contaGeneri,contaGeneriLayoutConstraints);
 
         commandPanel.add(ricercaPanel);
+        commandPanel.add(ordinaPanel);
         mainContent.add(commandPanel,commandLayoutConstraints);
 
 

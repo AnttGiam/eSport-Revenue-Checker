@@ -1,3 +1,4 @@
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
@@ -26,38 +27,172 @@ public class ManagerDB {
 
     public static String dbName = "ProgettoBD2";
     public static String collectionName = "Players";
+    public static GUI gui;
+    public static JButton cercaNick;
+    public static JButton cercaNazione;
+    public static JButton cercaNome;
+    public static JButton cercaCognome;
+    public static JButton cercaGioco;
+    public static JButton cercaGenere;
+    public static JButton resetButton;
+    public static JButton crescenteButton;
+    public static JButton contaGioco;
+    public static JButton contaGeneri;
+    public static JButton decrescenteButton;
+    public static JButton allButton;
+    public static JTextField ricercaField;
+    public static JTextArea viewArea;
+
 
     public ManagerDB(){
 
     }
 
     public static void main(String[] args) {
-        String uri = "mongodb://localhost:27017";
+        String uri = "mongodb://localhost:27017";;
         try (MongoClient mongoClient = MongoClients.create(uri)) {
-            System.out.println("Connesso correttamente a " + uri);
+            if(mongoClient!=null)
+                System.out.println("Connesso correttamente a " + uri);
             MongoDatabase database = mongoClient.getDatabase(dbName);
-            System.out.println("Selezionato Database " + dbName);
+            if(database!=null)
+                System.out.println("Selezionato Database " + dbName);
             MongoCollection<Document> collection = database.getCollection(collectionName);
-            System.out.println("Selezionata Collezione " + collectionName);
-            Menu(collection);
-
+            if(collection!=null)
+                System.out.println("Selezionata Collezione " + collectionName);
+            gui= new GUI();
+            viewArea = gui.getViewArea();
+            viewArea.setText("Ciao Sono Entrato");
+            cercaNick = gui.getRicercaNick();
+            cercaNazione = gui.getRicercaNazionalita();
+            cercaNome = gui.getRicercaNome();
+            cercaCognome = gui.getRicercaCognome();
+            cercaGioco = gui.getRicercaGioco();
+            cercaGenere = gui.getRicercaGenere();
+            ricercaField= gui.getRicercaField();
+            resetButton=gui.getResettaButton();
+            crescenteButton=gui.getOrdinaCrescenteButton();
+            decrescenteButton=gui.getOrdinaDecrescenteButton();
+            contaGioco=gui.getContaGiochi();
+            contaGeneri=gui.getContaGeneri();
+            allButton=gui.getAllButton();
+            allButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    viewArea.setText(StringMultipleResult(cercaTutti(collection)));
+                }
+            });
+            contaGioco.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    viewArea.setText(StringMultipleResult(contaGiochiPerGiocatori(collection)));
+                }
+            });
+            contaGeneri.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    viewArea.setText(StringMultipleResult(contaGenerePerGiocatore(collection)));
+                }
+            });
+            crescenteButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    viewArea.setText(StringMultipleResult(ordinaGuadagni(collection,1)));
+                }
+            });
+            decrescenteButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    viewArea.setText(StringMultipleResult(ordinaGuadagni(collection,0)));
+                }
+            });
+            resetButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    viewArea.setText("");
+                }
+            });
+            cercaNick.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    viewArea.setText(StringMultipleResult(cercaNickname(collection,ricercaField.getText())));
+                }
+            });
+            cercaNazione.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    viewArea.setText(StringMultipleResult(cercaNazione(collection,ricercaField.getText())));
+                }
+            });
+            cercaNome.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    viewArea.setText(StringMultipleResult(cercaNome(collection,ricercaField.getText())));
+                }
+            });
+            cercaCognome.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    viewArea.setText(StringMultipleResult(cercaCognome(collection,ricercaField.getText())));
+                }
+            });
+            cercaGenere.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    viewArea.setText(StringMultipleResult(cercaGenere(collection,ricercaField.getText())));
+                }
+            });
+            cercaGioco.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    viewArea.setText(StringMultipleResult(cercaGioco(collection,ricercaField.getText())));
+                }
+            });
+            Excape();
+            gui.setVisible(false);
         }
+        System.out.println("Programma Finito");
     }
 
 
+    //ESCAPE FUNZIONE
+    public static void Excape()
+    {
+        int i=1;
+        Scanner scanner = new Scanner(System.in);
+        while(i!=0)
+        {
+            i= scanner.nextInt();
+        }
+    }
     //QUERY
-    public static Document cercaNickname(MongoCollection<Document> collection, String Nickname){
+
+    public static MongoCursor<Document> cercaTutti(MongoCollection<Document> collection){
         Bson projectionFields = Projections.fields(
                 Projections.include("Nome", "Cognome","Nickname","Guadagni","Gioco","Paese"),
                 Projections.excludeId());
-        Document doc = collection.find(eq("Nickname", Nickname))
+
+        MongoCursor<Document> risultati = collection.find()
                 .projection(projectionFields)
-                .sort(Sorts.descending("Nome"))
-                .first();
-        if (doc == null) {
+                .sort(Sorts.ascending("Cognome")).iterator();
+        if (risultati == null) {
             return null;
         } else {
-            return doc;
+            return risultati;
+        }
+    }
+
+    public static MongoCursor<Document> cercaNickname(MongoCollection<Document> collection, String Nickname){
+        Bson projectionFields = Projections.fields(
+                Projections.include("Nome", "Cognome","Nickname","Guadagni","Gioco","Paese"),
+                Projections.excludeId());
+
+        MongoCursor<Document> risultati = collection.find(eq("Nickname",Nickname))
+                .projection(projectionFields)
+                .sort(Sorts.ascending("Cognome")).iterator();
+        if (risultati == null) {
+            return null;
+        } else {
+            return risultati;
         }
     }
     public static MongoCursor<Document> cercaNazione(MongoCollection<Document> collection, String Nazione){
@@ -65,9 +200,16 @@ public class ManagerDB {
                 Projections.include("Nome", "Cognome","Nickname","Guadagni","Gioco"),
                 Projections.excludeId());
 
-        MongoCursor<Document> risultati = collection.find(eq("Paese",Nazione))
-                .projection(projectionFields)
-                .sort(Sorts.ascending("Cognome")).iterator();
+        MongoCursor<Document> risultati=null;
+        try {
+                     risultati = collection.find(eq("Paese", Nazione))
+                        .projection(projectionFields)
+                        .sort(Sorts.ascending("Cognome")).iterator();
+             }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         if (risultati == null) {
             return null;
         } else {
@@ -162,7 +304,7 @@ public class ManagerDB {
         }
     }
 
-    public static MongoCursor<Document> ordinaGiochiPerGenere(MongoCollection<Document> collection){
+    public static MongoCursor<Document> contaGenerePerGiocatore(MongoCollection<Document> collection){
         MongoCursor<Document> risultati = collection.aggregate(Arrays.asList(
                 Aggregates.group("$Genere", Accumulators.sum("Gioco",1))
         )).iterator();
@@ -173,10 +315,11 @@ public class ManagerDB {
         }
     }
 
-    public static MongoCursor<Document> ordinaGiochiPerGiocatori(MongoCollection<Document> collection){
+    public static MongoCursor<Document> contaGiochiPerGiocatori(MongoCollection<Document> collection){
         MongoCursor<Document> risultati = collection.aggregate(Arrays.asList(
                 Aggregates.group("$Gioco", Accumulators.sum("Giocatori",1))
-        )).iterator();
+        ))
+                .iterator();
         if (risultati == null) {
             return null;
         } else {
@@ -277,16 +420,11 @@ public class ManagerDB {
         try
         {
             String result="";
-            //guiView.setText("");
             if(results.hasNext()==false)
                 result="Nessun Risultato Trovato";
                 //guiView.setText("Nessun Risultato Trovato");
             while(results.hasNext())
             {
-                /*
-                guiView.append(results.next().toJson());
-                guiView.append("\n");
-                 */
                 result+=results.next().toJson();
                 result+="\n";
             }
@@ -299,7 +437,11 @@ public class ManagerDB {
         }
     }
 
+
     //MENU
+    //DEPRECATED WITH GUI
+    /*
+
     public static void Menu(MongoCollection<Document> collection)
     {
         int exitCode=1;
@@ -464,6 +606,6 @@ public class ManagerDB {
                 }
             }
         }
-
     }
+     */
 }
