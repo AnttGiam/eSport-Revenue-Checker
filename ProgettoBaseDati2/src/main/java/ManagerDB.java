@@ -15,6 +15,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
@@ -203,6 +204,7 @@ public class ManagerDB {
                         String toModifyStr = toModify.toJson();
                         GuadagniGUI guadagniGUI = new GuadagniGUI(nickField.getText());
                         modificaGuadagniButton=guadagniGUI.getModificaButton();
+                        modificaGuadagniButton.setText("Aggiungi Guadagni");
                         modificaGuadagniButton.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
@@ -222,7 +224,7 @@ public class ManagerDB {
             allButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    viewArea.setText(StringMultipleResult(cercaTutti(collection)));
+                    viewArea.setText(StringMultipleGiocatoriResult(cercaTutti(collection)));
                 }
             });
             contaGioco.addActionListener(new ActionListener() {
@@ -240,13 +242,13 @@ public class ManagerDB {
             crescenteButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    viewArea.setText(StringMultipleResult(ordinaGuadagni(collection,1)));
+                    viewArea.setText(StringMultipleGiocatoriResult(ordinaGuadagni(collection,1)));
                 }
             });
             decrescenteButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    viewArea.setText(StringMultipleResult(ordinaGuadagni(collection,0)));
+                    viewArea.setText(StringMultipleGiocatoriResult(ordinaGuadagni(collection,0)));
                 }
             });
             resetButton.addActionListener(new ActionListener() {
@@ -258,37 +260,37 @@ public class ManagerDB {
             cercaNick.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    viewArea.setText(StringMultipleResult(cercaNickname(collection,ricercaField.getText())));
+                    viewArea.setText(StringMultipleGiocatoriResult(cercaNickname(collection,ricercaField.getText())));
                 }
             });
             cercaNazione.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    viewArea.setText(StringMultipleResult(cercaNazione(collection,ricercaField.getText())));
+                    viewArea.setText(StringMultipleGiocatoriResult(cercaNazione(collection,ricercaField.getText())));
                 }
             });
             cercaNome.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    viewArea.setText(StringMultipleResult(cercaNome(collection,ricercaField.getText())));
+                    viewArea.setText(StringMultipleGiocatoriResult(cercaNome(collection,ricercaField.getText())));
                 }
             });
             cercaCognome.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    viewArea.setText(StringMultipleResult(cercaCognome(collection,ricercaField.getText())));
+                    viewArea.setText(StringMultipleGiocatoriResult(cercaCognome(collection,ricercaField.getText())));
                 }
             });
             cercaGenere.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    viewArea.setText(StringMultipleResult(cercaGenere(collection,ricercaField.getText())));
+                    viewArea.setText(StringMultipleGiocatoriResult(cercaGenere(collection,ricercaField.getText())));
                 }
             });
             cercaGioco.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    viewArea.setText(StringMultipleResult(cercaGioco(collection,ricercaField.getText())));
+                    viewArea.setText(StringMultipleGiocatoriResult(cercaGioco(collection,ricercaField.getText())));
                 }
             });
             Excape();
@@ -315,6 +317,47 @@ public class ManagerDB {
             System.out.println("Inserisci 0 per uscire");
             i= scanner.nextInt();
         }
+    }
+
+    //VIEW TABLE
+    public static ArrayList<Giocatore> viewTable (MongoCursor<Document> results) {
+        ArrayList<Giocatore> giocatori = new ArrayList<>();
+        String toModifyStr;
+        while (results.hasNext())
+        {
+            Giocatore giocatore = new Giocatore();
+            toModifyStr=results.next().toJson();
+            String[] toModifyArray = toModifyStr.split(",");
+            for (int i = 0; i < toModifyArray.length; i++)
+            {
+
+                if (toModifyArray[i].contains("Nome")) {
+                    String[] field = toModifyArray[i].split(":");
+                    giocatore.setNome(pulisciString(field[1]));
+
+                } else if (toModifyArray[i].contains("Cognome")) {
+                    String[] field = toModifyArray[i].split(":");
+                    giocatore.setCognome(pulisciString(field[1]));
+                } else if (toModifyArray[i].contains("Nickname")) {
+                    String[] field = toModifyArray[i].split(":");
+                    giocatore.setNickname(pulisciString(field[1]));
+                } else if (toModifyArray[i].contains("Paese")) {
+                    String[] field = toModifyArray[i].split(":");
+                    giocatore.setPaese(pulisciString(field[1]));
+                } else if (toModifyArray[i].contains("Guadagni")) {
+                    String[] field = toModifyArray[i].split(":");
+                    giocatore.setGuadagni(pulisciString(field[1]));
+                } else if (toModifyArray[i].contains("Gioco")) {
+                    String[] field = toModifyArray[i].split(":");
+                    giocatore.setGioco(pulisciString(field[1]));
+                } else if (toModifyArray[i].contains("Genere")) {
+                    String[] field = toModifyArray[i].split(":");
+                    giocatore.setGenere(pulisciString(field[1]));
+                }
+            }
+            giocatori.add(giocatore);
+        }
+        return giocatori;
     }
 
 
@@ -554,7 +597,7 @@ public class ManagerDB {
 
     DEPRECATED WITH GUI
 
-    
+
     public static void PrintSingleResult(Document doc)
     {
         if(doc!=null)
@@ -589,14 +632,41 @@ public class ManagerDB {
         {
             String result="";
             if(results.hasNext()==false)
-                result="Nessun Risultato Trovato";
+
+            result="Nessun Risultato Trovato";
             while(results.hasNext())
             {
                 result+=results.next().toJson();
                 result+="\n";
             }
             return result;
+        }
+        finally
+        {
+            results.close();
+        }
+    }
 
+    public static String StringMultipleGiocatoriResult(MongoCursor<Document> results)
+    {
+        try
+        {
+            String result="";
+            ArrayList<Giocatore> risultati = viewTable(results);
+            if(risultati.size()==0)
+                return "Nessun risultato trovato";
+            for(int i=0;i<risultati.size();i++)
+            {
+                result +=(risultati.get(i).getNome()+"\t"
+                        +risultati.get(i).getCognome()+"\t"
+                        +risultati.get(i).getNickname()+"\t"
+                        +risultati.get(i).getPaese()+"\t"
+                        +risultati.get(i).getGuadagni()+"\t"
+                        +risultati.get(i).getGioco()+"\t"
+                        +risultati.get(i).getGenere())+"\n";
+            }
+
+            return result;
         }
         finally
         {
